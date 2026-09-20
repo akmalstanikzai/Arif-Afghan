@@ -2,6 +2,35 @@
 
 React + Vite staff login using Supabase Auth. Includes email/password login, persistent sessions, password visibility, error handling, and sign-out. After login, a responsive dashboard displays a welcome message, sidebar navigation, and account details. Factory operations data has not been added yet.
 
+## Project structure
+
+```text
+src/
+  app/App.jsx                    # App composition and authenticated screen selection
+  components/
+    navigation/Sidebar.jsx       # Shared workspace navigation
+    ui/                          # Brand, icons, alerts, page headings
+  features/
+    auth/                        # Login page, login branding, authentication hook
+    dashboard/pages/             # Overview and welcome screen
+    account/pages/               # Account profile
+  layouts/DashboardLayout.jsx    # Sidebar, header, and content shell
+  lib/
+    supabase/client.js           # Browser Supabase connection
+    user.js                      # Shared user display helper
+  styles/globals.css             # Tailwind import, theme tokens, and base styles
+  assets/                        # Bundled static assets
+  main.jsx                       # React entry point
+supabase/
+  migrations/                    # Every database migration
+  functions/                     # Every Edge Function, one folder per function
+    _shared/                     # Shared server-only helpers
+```
+
+Use Tailwind utilities in components. Add new areas such as inventory or production under `src/features/<feature>/`, keeping their pages, components, hooks, and services together as needed. Promote components to `src/components` only when shared across features. Navigation currently switches between Overview and My account in memory; add a router when URL-based pages are needed.
+
+All future migrations and Edge Functions belong in `supabase/`; see [the backend workflow](supabase/README.md). Project conventions are recorded in [AGENTS.md](AGENTS.md). No database or hosted functions are changed by this folder refactor.
+
 ## Connect Supabase
 
 1. Open your project in the Supabase dashboard and click **Connect**. Copy the project URL and publishable key (also available in project settings / API keys). A legacy anon key also works. Never use a secret or service_role key in this frontend.

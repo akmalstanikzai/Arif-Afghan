@@ -1,24 +1,46 @@
-# Logs
-logs
+# Installed dependencies and generated builds
+node_modules/
+/dist/
+/dist-ssr/
+
+# Environment values and local overrides (keep placeholder templates)
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs, caches, and test output
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.cache/
+.vite/
+.eslintcache
+*.tsbuildinfo
+/coverage/
+/.nyc_output/
+/playwright-report/
+/test-results/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Supabase CLI local state (keep migrations and functions tracked)
+/supabase/.temp/
+/supabase/.branches/
 
-# Editor directories and files
+# Personal editor settings (keep shared recommendations)
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.swp
+*.swo
+*~
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

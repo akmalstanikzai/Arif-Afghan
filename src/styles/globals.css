@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --color-brand: #193d31;
+  --color-brand-action: #234b39;
+  --color-brand-gold: #d9c58c;
+  --color-surface: #f7f8f5;
+  --color-ink: #263d32;
+  --color-line: #e5e9df;
+}
+
+@layer base {
+  body {
+    @apply m-0 font-sans antialiased;
+  }
+
+  button:focus-visible, input:focus-visible, a:focus-visible {
+    @apply outline-2 outline-offset-3 outline-[#7b966e];
+  }
+}
