@@ -7,14 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test tests/interface.test.mjs tests/calendar.test.mjs tests/operations.test.mjs && node tests/render-pages.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
     "@tailwindcss/vite": "^4.3.3",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "vazirmatn": "^33.0.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

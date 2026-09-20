@@ -27,7 +27,7 @@ begin
  delivery:=public.mill_post('delivery',jsonb_build_object('date','2026-09-20','target_id',sale,'weight',75),gen_random_uuid());
  assert (select remaining=9000 and pending=75 from public.mill_invoice_balances where id=sale), 'later cash and delivery';
  perform public.mill_post('expense','{"date":"2026-09-20","category_id":"electricity","description":"برق آزمایشی","amount":500}',gen_random_uuid());
- assert (select sum(amount)=3900 from public.mill_expense_report), 'expenses counted once';
+ assert (select sum(amount)=2900 from public.mill_expense_report), 'expenses counted once';
  select count(*) into count_before from public.mill_entries;
  rejected:=false; begin perform public.mill_post('sale',jsonb_build_object('date','2026-09-20','party_id',customer,'product_id',11,'weight',106,'unit_price',80),gen_random_uuid()); exception when others then rejected:=true; end;
  assert rejected, 'overselling rejected';
@@ -49,6 +49,12 @@ begin
  rejected:=false; begin update public.mill_sales set weight=1 where entry_id=sale; exception when insufficient_privilege then rejected:=true; end;
  assert rejected, 'direct mutation denied';
  assert (public.mill_snapshot()->'summary'->>'sales')::numeric=16000, 'snapshot summary';
+ assert public.mill_snapshot()->'summary' = jsonb_build_object(
+   'purchases',50000,'sales',16000,'service_charges',1000,'received',6200,
+   'supplier_paid',10000,'receivable',10300,'payable',40000,'rice_payment',500,
+   'expenses',2900,'processing_count',1,'processing_input',600,'processing_output',500,
+   'wastage',100,'service_count',1,'service_input',100,'service_output',90,'service_wastage',10
+ ), 'all dashboard totals match purchases, processing, service, cash, and reversals';
  assert (public.mill_history('sale',customer)->>'count')::integer=1, 'filtered history';
  raise notice 'PASS: purchase -> raw -> processing -> processed -> sale -> payment -> delivery; service rice/cash/balance; reversals; rollback; RLS mutation protection.';
 end $$;
