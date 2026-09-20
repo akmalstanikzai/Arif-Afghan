@@ -41,10 +41,19 @@ All future migrations and Edge Functions belong in `supabase/`; see [the backend
 
    .env.local is ignored by Git. Vite exposes these public values to the browser. Never put private credentials in VITE_ variables.
 3. In **Authentication > Sign In / Providers**, enable Email authentication.
-4. In **Authentication > Users > Add user > Create new user**, create a staff account with email and password. Mark the email as confirmed for this administrator-created test account. No custom users table or SQL is needed.
-5. For a staff-only app, disable **Allow new users to sign up** in the authentication settings. Administrators can create staff accounts in the dashboard. The app has no public signup or password-reset flow; staff should contact their administrator.
-6. In **Authentication > URL Configuration**, set Site URL to http://localhost:5173 for development and your HTTPS domain when deployed. Password login itself needs no redirect URL.
-7. Run npm install, then npm run dev. Open the address Vite shows. Restart Vite after changing .env.local.
+4. In **Authentication > Users > Add user > Create new user**, create a staff account with email and password. Mark the email as confirmed for this administrator-created test account.
+5. Add that Auth user to the staff allow-list from the Supabase SQL editor. Replace the email with the exact account email:
+
+  ```sql
+  insert into public.mill_staff(user_id)
+  select id from auth.users where email = 'staff@example.com'
+  on conflict (user_id) do update set active = true;
+  ```
+
+  The factory RPCs intentionally reject authenticated users who are not active in `public.mill_staff`.
+6. For a staff-only app, disable **Allow new users to sign up** in the authentication settings. Administrators can create staff accounts in the dashboard, then add them to `mill_staff` with the SQL above. The app has no public signup or password-reset flow; staff should contact their administrator.
+7. In **Authentication > URL Configuration**, set Site URL to http://localhost:5173 for development and your HTTPS domain when deployed. Password login itself needs no redirect URL.
+8. Run npm install, then npm run dev. Open the address Vite shows. Restart Vite after changing .env.local.
 
 ## Verify
 

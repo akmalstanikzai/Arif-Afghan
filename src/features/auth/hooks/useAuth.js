@@ -22,11 +22,11 @@ export function useAuth() {
     supabase.auth.getSession().then(({ data, error: sessionError }) => {
       if (!active || authChanged) return;
       setSession(data.session);
-      if (sessionError) setError('Your session could not be restored. Please sign in again.');
+      if (sessionError) setError('نشست شما بازیابی نشد. لطفاً دوباره وارد شوید.');
       setLoading(false);
     }).catch(() => {
       if (active && !authChanged) {
-        setError('Unable to connect. Please check your connection and try again.');
+        setError('ارتباط برقرار نشد. اتصال انترنت را بررسی کرده و دوباره کوشش کنید.');
         setLoading(false);
       }
     });
@@ -43,10 +43,10 @@ export function useAuth() {
     setError('');
     try {
       const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (authError) setError(authError.message);
+      if (authError) setError(authError.code === 'invalid_credentials' ? 'ایمیل یا رمز عبور درست نیست.' : authError.code === 'email_not_confirmed' ? 'ایمیل حساب هنوز تأیید نشده است.' : authError.code === 'over_request_rate_limit' ? 'درخواست‌های زیاد فرستاده شده است. کمی صبر کنید.' : 'عملیات حساب انجام نشد. دوباره کوشش کنید یا با مدیر تماس بگیرید.');
       return !authError;
     } catch {
-      setError('Unable to connect. Please check your connection and try again.');
+      setError('ارتباط برقرار نشد. اتصال انترنت را بررسی کرده و دوباره کوشش کنید.');
       return false;
     } finally {
       setBusy(false);
@@ -59,9 +59,9 @@ export function useAuth() {
     setError('');
     try {
       const { error: authError } = await supabase.auth.signOut();
-      if (authError) setError(authError.message);
+      if (authError) setError(authError.code === 'invalid_credentials' ? 'ایمیل یا رمز عبور درست نیست.' : authError.code === 'email_not_confirmed' ? 'ایمیل حساب هنوز تأیید نشده است.' : authError.code === 'over_request_rate_limit' ? 'درخواست‌های زیاد فرستاده شده است. کمی صبر کنید.' : 'عملیات حساب انجام نشد. دوباره کوشش کنید یا با مدیر تماس بگیرید.');
     } catch {
-      setError('Unable to sign out. Please try again.');
+      setError('خروج انجام نشد. لطفاً دوباره کوشش کنید.');
     } finally {
       setBusy(false);
     }

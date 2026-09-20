@@ -1,33 +1,25 @@
-import Icon from '../../../components/ui/Icon';
 import PageHeading from '../../../components/ui/PageHeading';
+import { Card, Stat, Table, secondaryClass } from '../../../components/ui/Fields';
 import { getUserDisplayName } from '../../../lib/user';
-
-export default function OverviewPage({ user, onViewAccount }) {
-  const name = getUserDisplayName(user);
-  const today = new Date();
-  const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-  return (
-    <>
-      <PageHeading eyebrow="YOUR WORKSPACE AT A GLANCE" title="Overview">
-        <time className="max-w-28 text-right text-[11px] leading-relaxed text-[#7e8877] md:max-w-none" dateTime={localDate}>{today.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</time>
-      </PageHeading>
-      <section className="flex items-center justify-between gap-5 rounded-2xl border border-[#dee5d2] bg-[#e9eedf] p-7 lg:p-10">
-        <div className="min-w-0">
-          <span className="flex items-center gap-2 text-[9px] tracking-[1.6px] text-[#59704c]"><span className="size-1 rounded-full bg-[#6c8853]" /> YOU’RE ALL SET</span>
-          <h2 className="mt-5 mb-3 font-display text-[clamp(30px,3vw,44px)] tracking-tight wrap-anywhere">Welcome, {name}.</h2>
-          <p className="max-w-[430px] text-[13px] leading-[1.9] text-[#708064]">It’s good to have you here. This is your space to keep your factory’s day moving.</p>
-          <span className="mt-6 block text-[10px] text-[#7b886c]">Rooted in quality. Ready for what’s next.</span>
-        </div>
-        <div className="hidden size-25 shrink-0 place-items-center rounded-full border border-[#d1dbbf] text-[#8c9e6f] md:grid lg:size-39" aria-hidden="true"><Icon name="leaf" className="size-19 lg:size-30" /></div>
-      </section>
-      <section className="mt-6 rounded-xl border border-line bg-white px-6 py-11 text-center">
-        <span className="mx-auto mb-5 grid size-13 place-items-center rounded-xl bg-[#f2f5ec] text-[#7b916b]"><Icon name="home" width="25" height="25" /></span>
-        <h2 className="mb-3 text-[17px] font-medium">A fresh start for your factory.</h2>
-        <p className="mx-auto max-w-[390px] text-xs leading-[1.9] text-[#90988b]">Your dashboard is ready. As factory features are added, your operations and updates will appear here.</p>
-        <button className="mt-6 cursor-pointer rounded-md border border-[#dce3d4] px-4 py-2.5 text-[11px] text-[#4b6640] hover:bg-[#f2f5ec]" onClick={onViewAccount}>View my account <span className="ml-3.5" aria-hidden="true">→</span></button>
-      </section>
-      <footer className="mt-7 flex justify-between gap-4 text-[10px] text-[#9aa191]">Rice Factory <span>Your everyday workspace.</span></footer>
-    </>
-  );
+import { money, weight, number, dateLabel, kindLabels } from '../../../lib/format';
+import { useFactory } from '../../factory/hooks/useFactory';
+import { RawStockTable, ProductStockTable } from '../../inventory/components/StockTables';
+import { useLanguage } from '../../../lib/i18n';
+export default function OverviewPage({ user, onNavigate }) {
+  const { data } = useFactory();
+  const { t } = useLanguage();
+  const s = data.summary;
+  const sum = key => data.products.reduce((a,p)=>a+Number(p[key]),0);
+  const finances = [['مجموع خرید مواد خام',s.purchases],['مجموع فروش برنج',s.sales],['اجرت پروسس امانتی',s.service_charges],['نقد دریافتی از مشتریان',s.received],['قابل دریافت از مشتریان',s.receivable],['نقد پرداختی به تأمین‌کنندگان',s.supplier_paid],['قابل پرداخت به تأمین‌کنندگان',s.payable],['مجموع مصارف',s.expenses],['اجرت تسویه‌شده با برنج',s.rice_payment]];
+  return <div className="space-y-6"><PageHeading eyebrow="نمای کلی فعالیت‌های کارخانه" title="صفحهٔ اصلی" />
+    <section className="rounded-2xl border border-[#dee5d2] bg-[#e9eedf] p-7"><p className="text-xs text-[#59704c]">{t('کارخانهٔ برنج')}</p><h2 className="mt-3 text-3xl leading-relaxed">{t('خوش آمدید، {name}.', { name: getUserDisplayName(user) })}</h2><p className="mt-2 text-sm leading-8 text-[#708064]">{t('وضعیت موجودی، حساب‌ها و فعالیت‌های کارخانه در یک نگاه.')}</p><div className="mt-5 flex flex-wrap gap-2"><button className={secondaryClass} onClick={()=>onNavigate('purchases')}>{t('ثبت خرید')}</button><button className={secondaryClass} onClick={()=>onNavigate('processing')}>{t('ثبت پروسس')}</button><button className={secondaryClass} onClick={()=>onNavigate('sales')}>{t('ثبت فروش')}</button></div></section>
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Stat label="مجموع موجودی خام" value={weight(data.raw_stock.reduce((a,r)=>a+Number(r.quantity),0))} /><Stat label="موجودی فیزیکی پروسس‌شده" value={weight(sum('physical'))} /><Stat label="موجودی قابل فروش" value={weight(sum('available'))} /><Stat label="برنج مشتری در گدام" value={weight(sum('reserved'))} /></div>
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{finances.map(([label,value])=><Stat key={label} label={label} value={money(value)} />)}</div>
+    <Card title="آمار پروسس کارخانه"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Stat label="دسته‌های پروسس" value={number(s.processing_count,0)} /><Stat label="وزن ورودی" value={weight(s.processing_input)} /><Stat label="محصول تولیدشده" value={weight(s.processing_output)} /><Stat label="ضایعات" value={weight(s.wastage)} /></div></Card>
+    <Card title="آمار پروسس امانتی"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Stat label="دسته‌های امانتی" value={number(s.service_count,0)} /><Stat label="ورودی مشتریان" value={weight(s.service_input)} /><Stat label="خروجی مشتریان" value={weight(s.service_output)} /><Stat label="ضایعات امانتی" value={weight(s.service_wastage)} /></div></Card>
+    <Card title="موجودی هر نوع برنج خام"><RawStockTable rows={data.raw_stock} /></Card>
+    <Card title="موجودی هر محصول"><ProductStockTable rows={data.products} /></Card>
+    <Card title="مصارف به تفکیک دسته"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{data.expenses.map(c=><Stat key={c.id} label={c.name} value={money(c.amount)} />)}</div></Card>
+    <Card title="آخرین معاملات"><Table rows={data.recent} columns={[{key:'seq',label:'شماره',render:r=>number(r.seq,0)},{key:'date',label:'تاریخ',render:r=>dateLabel(r.date)},{key:'kind',label:'نوع سند',render:r=>`${t(kindLabels[r.kind])}${r.voided_at ? ` (${t('باطل')})` : ''}`},{key:'party_name',label:'شخص / محصول',render:r=>r.party_name||r.item_name||r.description||'—'},{key:'total',label:'مبلغ / وزن',render:r=>r.kind==='delivery'?weight(r.weight):money(r.total)}]} /></Card>
+  </div>;
 }

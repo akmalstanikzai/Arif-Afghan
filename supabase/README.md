@@ -10,7 +10,15 @@ supabase/
     <function-name>/index.ts    # Each function's entry point (when added)
 ```
 
-There are no custom migrations or Edge Functions yet. Supabase Auth alone does not require a custom SQL migration. This folder has not been linked to a hosted project or synchronized with its schema.
+The mill migrations define the factory schema and staff allow-list. After applying them to a hosted project, every authenticated operator must also be inserted into `public.mill_staff`; Auth users are not staff automatically. This folder is not linked to a hosted project or synchronized with its schema.
+
+After creating a user in Supabase Auth, provision access with:
+
+```sql
+insert into public.mill_staff(user_id)
+select id from auth.users where email = 'staff@example.com'
+on conflict (user_id) do update set active = true;
+```
 
 ## Workflow
 
