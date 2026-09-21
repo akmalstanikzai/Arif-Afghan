@@ -20,3 +20,7 @@ export const paySupplier = (data, requestId) => rpc('mill_pay_supplier', {
   p_request_id: requestId,
 });
 export const updatePurchase = (data, requestId) => rpc('mill_update_purchase', { p_id: data.id, p_data: data, p_request_id: requestId });
+export const fetchDailyExpenseSummary = date => rpc('mill_daily_expense_summary', { p_date: date });
+export const fetchMonthlyExpenses = () => rpc('mill_monthly_expense_list');
+export const saveMonthlyExpense = (data, requestId) => rpc('mill_save_monthly_expense', { p_data: data, p_request_id: requestId });
+export const deleteMonthlyExpense = id => rpc('mill_delete_monthly_expense', { p_id: id });

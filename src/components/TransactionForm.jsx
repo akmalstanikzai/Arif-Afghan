@@ -52,7 +52,7 @@ export default function TransactionForm({ kind, onSaved }) {
         {kind === 'sale' && <WeightInput label="Current delivery" value={v.delivered} bagSize={v.bag_size} onChange={val=>set('delivered',val)} hint="Enter zero if the rice remains in storage." />}
         {kind === 'expense' && <>
           <Input label="Expense description *" value={v.description} onChange={val => set('description', val)} maxLength={500} />
-          <SearchSelect label="Expense category *" value={v.category_id} onChange={val => set('category_id', val)} options={data.expense_categories.map(category => ({ ...category, name: t(category.name) }))} />
+          <SearchSelect label="Expense category *" value={v.category_id} onChange={val => set('category_id', val)} options={data.expense_categories.filter(category=>!['salary','electricity'].includes(category.id)).map(category => ({ ...category, name: t(category.name) }))} />
           {numericInput('amount', "Amount paid (AFN) *")}
           <Input label="Responsible person" value={v.responsible} onChange={val => set('responsible', val)} maxLength={160} />
         </>}

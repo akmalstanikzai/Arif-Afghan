@@ -25,7 +25,7 @@ try {
     ['ProcessingPage', { service: true }, 'Record completed contract processing'],
     ['SalesPage', {}, 'Record sale'], ['InventoryPage', {}, 'Processed inventory'], ['RawInventoryPage', {}, 'Raw material inventory'], ['OngoingProcessesPage', {}, 'Ongoing processes'],
     ['PartiesPage', { kind: 'supplier' }, 'Add supplier'], ['PartiesPage', { kind: 'customer' }, 'Add customer'],
-    ['ExpensesPage', {}, 'Record expense'],
+    ['ExpensesPage', {}, 'Record expense'], ['MonthlyExpensesPage', {}, 'Record monthly fixed expense'],
   ];
   for (const language of ['en', 'fa-AF', 'ps-AF']) {
     setCurrentLanguage(language);
@@ -49,5 +49,5 @@ try {
       }
     }
   }
-  console.log('PASS: 39 page renders across English, Dari, and Pashto; errors and user data boundaries.');
+  console.log('PASS: 42 page renders across English, Dari, and Pashto; errors and user data boundaries.');
 } finally { await server.close(); }
