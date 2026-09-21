@@ -40,7 +40,10 @@ try {
       const html = renderToStaticMarkup(React.createElement(LanguageProvider, null,
         React.createElement(FactoryContext.Provider, { value: { data, version: 0, refresh: async () => {} } }, React.createElement(Page, props))));
       assert.ok(html.includes(catalogs[language][heading]), `${language}: ${name}: ${heading}`);
-      if (name === 'AccountPage') assert.ok(html.includes('Salary'), 'user name must remain unchanged');
+      if (name === 'AccountPage') {
+        assert.ok(html.includes('Salary'), 'user name must remain unchanged');
+        assert.ok(html.includes(catalogs[language]['Clear all testing data']), `${language}: settings reset control`);
+      }
       if (name === 'LoginPage') assert.ok(html.includes(catalogs[language]['The email or password is incorrect.']));
       if (name === 'InventoryPage') assert.ok(html.includes('Untranslated product'));
       if (['PurchasesPage','ProcessingPage','SalesPage','ExpensesPage'].includes(name)) {

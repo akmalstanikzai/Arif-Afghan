@@ -545,5 +545,13 @@
   "Monthly breakdown by day": "د میاشتې تفصیل د ورځې له مخې",
   "Yearly breakdown by month": "د کال تفصیل د میاشتې له مخې",
   "All-time breakdown by year": "د ټولې مودې تفصیل د کال له مخې",
-  "Period": "موده"
+  "Period": "موده",
+  "Settings": "تنظیمات",
+  "Testing data reset": "د ازمایښتي معلوماتو پاکول",
+  "Delete all factory records and people added for testing. Your login account and fixed rice, product, and expense catalogs will not be deleted.": "د ازموینې لپاره ټول ثبت شوي فابریکوي معلومات او کسان پاک کړئ. ستاسو د ننوتلو حساب او د وریجو، محصولاتو او لګښتونو ثابت لېستونه نه پاکېږي.",
+  "This permanently deletes all factory records, suppliers, customers, employees, salaries, and expenses. User accounts and fixed catalogs will remain. Continue?": "دا کار د فابریکې ټول ثبتونه، عرضه کوونکي، پېرودونکي، کارکوونکي، معاشونه او لګښتونه د تل لپاره پاکوي. کارن حسابونه او ثابت لېستونه پاتې کېږي. دوام ورکړو؟",
+  "Clear all testing data": "ټول ازمایښتي معلومات پاک کړئ",
+  "Clearing data…": "معلومات پاکېږي…",
+  "All testing data was cleared successfully.": "ټول ازمایښتي معلومات په بریالیتوب پاک شول.",
+  "Data reset confirmation is invalid": "د معلوماتو پاکولو تایید ناسم دی."
 }

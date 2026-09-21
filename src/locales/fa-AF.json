@@ -545,5 +545,13 @@
   "Monthly breakdown by day": "جزئیات ماه به تفکیک روز",
   "Yearly breakdown by month": "جزئیات سال به تفکیک ماه",
   "All-time breakdown by year": "جزئیات تمام دوره به تفکیک سال",
-  "Period": "دوره"
+  "Period": "دوره",
+  "Settings": "تنظیمات",
+  "Testing data reset": "پاک‌سازی داده‌های آزمایشی",
+  "Delete all factory records and people added for testing. Your login account and fixed rice, product, and expense catalogs will not be deleted.": "تمام سوابق کارخانه و اشخاص افزوده‌شده برای آزمایش را حذف کنید. حساب ورود و فهرست‌های ثابت برنج، محصول و کتگوری مصارف حذف نمی‌شوند.",
+  "This permanently deletes all factory records, suppliers, customers, employees, salaries, and expenses. User accounts and fixed catalogs will remain. Continue?": "این کار تمام سوابق کارخانه، تأمین‌کنندگان، مشتریان، کارمندان، معاش‌ها و مصارف را برای همیشه حذف می‌کند. حساب‌های کاربری و فهرست‌های ثابت باقی می‌مانند. ادامه می‌دهید؟",
+  "Clear all testing data": "پاک‌کردن تمام داده‌های آزمایشی",
+  "Clearing data…": "در حال پاک‌سازی داده‌ها…",
+  "All testing data was cleared successfully.": "تمام داده‌های آزمایشی با موفقیت پاک شد.",
+  "Data reset confirmation is invalid": "تأیید پاک‌سازی داده نامعتبر است."
 }

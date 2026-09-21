@@ -545,5 +545,13 @@
   "Monthly breakdown by day": "Monthly breakdown by day",
   "Yearly breakdown by month": "Yearly breakdown by month",
   "All-time breakdown by year": "All-time breakdown by year",
-  "Period": "Period"
+  "Period": "Period",
+  "Settings": "Settings",
+  "Testing data reset": "Testing data reset",
+  "Delete all factory records and people added for testing. Your login account and fixed rice, product, and expense catalogs will not be deleted.": "Delete all factory records and people added for testing. Your login account and fixed rice, product, and expense catalogs will not be deleted.",
+  "This permanently deletes all factory records, suppliers, customers, employees, salaries, and expenses. User accounts and fixed catalogs will remain. Continue?": "This permanently deletes all factory records, suppliers, customers, employees, salaries, and expenses. User accounts and fixed catalogs will remain. Continue?",
+  "Clear all testing data": "Clear all testing data",
+  "Clearing data…": "Clearing data…",
+  "All testing data was cleared successfully.": "All testing data was cleared successfully.",
+  "Data reset confirmation is invalid": "Data reset confirmation is invalid."
 }

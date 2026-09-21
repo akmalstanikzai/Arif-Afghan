@@ -15,7 +15,7 @@ export const navigation = [
   { id: 'monthly_expenses', label: "Monthly expenses", icon: 'wallet' },
   { id: 'staff_salaries', label: "Staff and salaries", icon: 'user' },
   { id: 'expense_dashboard', label: "Expense dashboard", icon: 'home' },
-  { id: 'account', label: "My account", icon: 'user' },
+  { id: 'account', label: "Settings", icon: 'user' },
 ];
 export const sidebarNavigation = [
   navigation[0],

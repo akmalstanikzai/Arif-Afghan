@@ -31,3 +31,4 @@ export const payEmployeeSalary = (data, requestId) => rpc('mill_pay_employee_sal
 export const startContractProcess = (data, requestId) => rpc('mill_start_contract_process', { p_data: data, p_request_id: requestId });
 export const completeContractProcess = (data, requestId) => rpc('mill_complete_contract_process', { p_data: data, p_request_id: requestId });
 export const fetchExpenseDashboard = date => rpc('mill_expense_dashboard', { p_date: date });
+export const clearTestingData = () => rpc('mill_clear_testing_data', { p_confirmation: 'CLEAR ALL DATA' });
