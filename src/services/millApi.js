@@ -24,3 +24,7 @@ export const fetchDailyExpenseSummary = date => rpc('mill_daily_expense_summary'
 export const fetchMonthlyExpenses = () => rpc('mill_monthly_expense_list');
 export const saveMonthlyExpense = (data, requestId) => rpc('mill_save_monthly_expense', { p_data: data, p_request_id: requestId });
 export const deleteMonthlyExpense = id => rpc('mill_delete_monthly_expense', { p_id: id });
+export const fetchSalarySnapshot = month => rpc('mill_salary_snapshot', { p_month: month });
+export const saveEmployee = (data, requestId) => rpc('mill_save_employee', { p_data: data, p_request_id: requestId });
+export const deleteEmployee = id => rpc('mill_delete_employee', { p_id: id });
+export const payEmployeeSalary = (data, requestId) => rpc('mill_pay_employee_salary', { p_data: data, p_request_id: requestId });
