@@ -28,8 +28,8 @@ function ActionForm({ action, entry, onClose }) {
     const payload = action === 'void' ? { id: entry.id, reason } : { ...payment, date, target_id: entry.id, [action === 'payment' ? 'amount' : 'weight']: normalizeDigits(amount) };
     if (await mutation.save(action, payload)) onClose();
   }
-  return <div className="my-4 rounded-lg border border-brand/20 bg-surface p-5"><h3 className="mb-4 font-semibold">{t(action === 'void' ? "Void record" : action === 'payment' ? "Record cash payment" : "Record rice delivery")} — {number(entry.seq,0)}</h3><form onSubmit={submit} noValidate><fieldset disabled={mutation.busy} className="grid items-end gap-4 sm:grid-cols-2">
-    {action === 'void' ? <Input label="Void reason *" value={reason} onChange={setReason} maxLength={1000} hint="The record will be reversed and its history retained. Void related payments and deliveries first." /> : <>
+  return <div className="my-4 rounded-lg border border-brand/20 bg-surface p-5"><h3 className="mb-4 font-semibold">{t(action === 'void' ? (entry.kind === 'purchase' ? "Delete purchase record" : "Void record") : action === 'payment' ? "Record cash payment" : "Record rice delivery")} — {number(entry.seq,0)}</h3><form onSubmit={submit} noValidate><fieldset disabled={mutation.busy} className="grid items-end gap-4 sm:grid-cols-2">
+    {action === 'void' ? <Input label={entry.kind === 'purchase' ? "Deletion reason *" : "Void reason *"} value={reason} onChange={setReason} maxLength={1000} hint={entry.kind === 'purchase' ? "The purchase will be removed from active records and retained in the audit history. Delete dependent records first." : "The record will be reversed and its history retained. Void related payments and deliveries first."} /> : <>
       <DateInput label="Date" required value={date} onChange={setDate} />
       {action === 'delivery' ? <WeightInput label="Delivery weight" value={amount} bagSize={entry.bag_size} onChange={setAmount} hint={t('Remaining:')+' '+weight(entry.pending)} /> : <><Input label="Amount (AFN)" inputMode="decimal" value={amount} onChange={setAmount} hint={t('Remaining:')+' '+money(entry.remaining)} /><PaymentFields value={payment} onChange={setPayment} /></>}
     </>}
@@ -99,13 +99,21 @@ export default function History({ kind = null, partyId = null, title = "Transact
       {key:'seq',label:"Number",render:r=>number(r.seq,0)},{key:'date',label:"Date",render:r=>dateLabel(r.date, r.date_solar_hijri)},
       {key:'kind',label:"Type",render:r=><span>{t(kindLabels[r.kind])}{r.voided_at && <span className="ms-1 text-red-700">({t("Voided")})</span>}</span>},
       {key:'party_name',label:"Party / product",render:r=><><span className="block">{r.party_name || r.item_name || r.description || '—'}</span>{r.party_name && <span className="text-stone-500">{r.item_name}</span>}</>},
-      {key:'total',label:"Amount / weight",render:r=>r.kind === 'delivery' ? weight(r.weight) : money(r.total)},
-      {key:'remaining',label:"Balance",render:r=>['purchase','sale','service'].includes(r.kind) && !r.voided_at ? money(r.remaining) : '—'},
+      ...(kind === 'purchase' ? [
+        {key:'weight_kg',label:"Weight (kg)",render:r=>weight(r.weight)},
+        {key:'weight_tons',label:"Weight (tons)",render:r=>`${number(Number(r.weight)/1000,3)} ${t('tons')}`},
+        {key:'total',label:"Total purchase price",render:r=>money(r.total)},
+        {key:'paid',label:"Paid amount",render:r=>money(r.paid)},
+        {key:'remaining',label:"Remaining amount",render:r=>r.voided_at?'—':money(r.remaining)},
+      ] : [
+        {key:'total',label:"Amount / weight",render:r=>r.kind === 'delivery' ? weight(r.weight) : money(r.total)},
+        {key:'remaining',label:"Balance",render:r=>['sale','service'].includes(r.kind) && !r.voided_at ? money(r.remaining) : '—'},
+      ]),
       ...(kind === 'sale' ? [{key:'pending',label:"Delivery status",render:r=>r.voided_at?t("Voided"):Number(r.pending)===0?t("Complete"):`${Number(r.delivered)>0?t("Partial"):t("Not delivered")} · ${weight(r.pending)} ${t("remaining")}`}] : []),
       {key:'actions',label:"Actions",render:r=><div className="flex flex-wrap gap-2"><button className={secondaryClass} onClick={()=>{setSelected(r);setAction(null);}}>{t("Details")}</button>{!r.voided_at && <>
-        {['purchase','sale','service'].includes(r.kind) && Number(r.remaining)>0 && <button className={secondaryClass} onClick={()=>{setSelected(r);setAction('payment');}}>{t("Payment")}</button>}
+        {['sale','service'].includes(r.kind) && Number(r.remaining)>0 && <button className={secondaryClass} onClick={()=>{setSelected(r);setAction('payment');}}>{t("Payment")}</button>}
         {r.kind==='sale' && Number(r.pending)>0 && <button className={secondaryClass} onClick={()=>{setSelected(r);setAction('delivery');}}>{t("Delivery")}</button>}
-        <button className={`${secondaryClass} text-red-700`} onClick={()=>{setSelected(r);setAction('void');}}>{t("Void")}</button>
+        <button className={`${secondaryClass} text-red-700`} onClick={()=>{setSelected(r);setAction('void');}}>{t(r.kind === 'purchase' ? "Delete" : "Void")}</button>
       </>}</div>},
     ]} />
     {selected && <div><button className={`${secondaryClass} mt-3`} onClick={()=>{setSelected(null);setAction(null);}}>{t("Close details")}</button>{action ? <ActionForm key={`${selected.id}-${action}`} action={action} entry={selected} onClose={()=>{setSelected(null);setAction(null);}} /> : <EntryDetails entry={selected} />}</div>}

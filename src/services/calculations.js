@@ -23,6 +23,7 @@ export function validateTransaction(kind, v, data) {
   for (const key of fields) {
     if (!Number.isFinite(numeric(v[key])) || numeric(v[key]) < 0 || numeric(v[key]) > 1e12) return "All weights and amounts must be valid non-negative numbers.";
   }
+  if (kind === 'purchase' && numeric(v.paid)>0 && v.payment_method === 'cheque' && !v.cheque_number?.trim()) return 'Enter a cheque number.';
   const precisionValid = (value, places) => Math.abs(numeric(value) * (10 ** places) - Math.round(numeric(value) * (10 ** places))) < 0.000001;
   for (const key of fields) if (!precisionValid(v[key], ['weight','input_weight','delivered'].includes(key) ? 3 : key === 'unit_price' ? 4 : 2)) return "Weights support up to three decimals, prices per kg up to four, and amounts up to two.";
   if (['purchase','sale'].includes(kind) && numeric(v.weight) <= 0) return "Weight must be greater than zero.";
@@ -35,7 +36,6 @@ export function validateTransaction(kind, v, data) {
       if (numeric(o.retained) > 0 && numeric(o.fee_price) <= 0) return "Enter an agreed price per kg for the factory share.";
     }
   }
-  if (kind === 'purchase' && numeric(v.paid)>0 && v.payment_method === 'cheque' && !v.cheque_number?.trim()) return 'Enter a cheque number.';
   if(kind === 'service'){const error=validateOutputPackaging(v.outputs || []);if(error)return error;}
   const c = calculate(kind, v, data);
   if (['purchase','sale','service'].includes(kind) && c.remaining < -0.001) return "Cash and rice payments exceed the record amount.";

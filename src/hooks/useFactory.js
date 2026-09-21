@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react';
 import { FactoryContext } from '../providers/FactoryContext.js';
-import { postEntry } from '../services/millApi.js';
+import { deleteParty, paySupplier, postEntry } from '../services/millApi.js';
 import { errorMessage } from '../lib/format.js';
 export const useFactory = () => useContext(FactoryContext);
 
@@ -25,5 +25,30 @@ export function useMutation() {
     } catch (err) { setError(errorMessage(err)); return null; }
     finally { running.current = false; setBusy(false); }
   }
-  return { save, busy, error, setError, success, setSuccess };
+  async function removeParty(id) {
+    if (running.current) return false;
+    running.current = true; setBusy(true); setError(''); setSuccess('');
+    try {
+      await deleteParty(id);
+      setSuccess("Supplier deleted successfully.");
+      await refresh();
+      return true;
+    } catch (err) { setError(errorMessage(err)); return false; }
+    finally { running.current = false; setBusy(false); }
+  }
+  async function saveSupplierPayment(data) {
+    if (running.current) return null;
+    running.current = true; setBusy(true); setError(''); setSuccess('');
+    const signature = JSON.stringify({ kind: 'supplier_payment', data });
+    if (request.current?.signature !== signature) request.current = { signature, id: crypto.randomUUID() };
+    try {
+      const id = await paySupplier(data, request.current.id);
+      request.current = null;
+      setSuccess("Supplier payment saved successfully.");
+      await refresh();
+      return id;
+    } catch (err) { setError(errorMessage(err)); return null; }
+    finally { running.current = false; setBusy(false); }
+  }
+  return { save, removeParty, saveSupplierPayment, busy, error, setError, success, setSuccess };
 }

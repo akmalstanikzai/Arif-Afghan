@@ -30,10 +30,11 @@ test('processed-stock filters combine type, quality, bag size, mark and availabi
   assert.equal(rows[0].bag_mark,'Talha','filtering must not mutate source order');
 });
 
-test('starting a process does not need outputs; cheques and sales validate their own stock', () => {
+test('starting a process does not need outputs; purchases accept initial payments; sales validate their own stock', () => {
   const data={raw_stock:[{id:1,quantity:100,average_cost:50}],products:[],packaged_stock:[{product_id:11,bag_size:20,bag_mark:'Talha',available:20}]};
   assert.equal(validateTransaction('processing',{date:'2026-09-20',raw_type_id:1,input_weight:50},data),'');
   assert.equal(validateTransaction('processing',{date:'2026-09-20',raw_type_id:1,input_weight:101},data),'There is not enough raw rice inventory.');
-  assert.equal(validateTransaction('purchase',{date:'2026-09-20',party_id:'supplier',raw_type_id:1,weight:10,unit_price:5,paid:10,payment_method:'cheque'},data),'Enter a cheque number.');
+  assert.equal(validateTransaction('purchase',{date:'2026-09-20',party_id:'supplier',raw_type_id:1,weight:10,unit_price:5,logistics:0},data),'');
+  assert.equal(validateTransaction('purchase',{date:'2026-09-20',party_id:'supplier',raw_type_id:1,weight:10,unit_price:5,logistics:0,paid:10,payment_method:'cheque'},data),'Enter a cheque number.');
   assert.equal(validateTransaction('sale',{date:'2026-09-20',party_id:'customer',product_id:11,weight:1,unit_price:5,bag_size:20,bag_mark:'Mahfooz'},data),'There is not enough available inventory.');
 });
