@@ -19,3 +19,4 @@ export const paySupplier = (data, requestId) => rpc('mill_pay_supplier', {
   p_payment_institution: data.payment_institution,
   p_request_id: requestId,
 });
+export const updatePurchase = (data, requestId) => rpc('mill_update_purchase', { p_id: data.id, p_data: data, p_request_id: requestId });

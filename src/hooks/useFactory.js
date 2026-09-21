@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react';
 import { FactoryContext } from '../providers/FactoryContext.js';
-import { deleteParty, paySupplier, postEntry } from '../services/millApi.js';
+import { deleteParty, paySupplier, postEntry, updatePurchase } from '../services/millApi.js';
 import { errorMessage } from '../lib/format.js';
 export const useFactory = () => useContext(FactoryContext);
 
@@ -50,5 +50,19 @@ export function useMutation() {
     } catch (err) { setError(errorMessage(err)); return null; }
     finally { running.current = false; setBusy(false); }
   }
-  return { save, removeParty, saveSupplierPayment, busy, error, setError, success, setSuccess };
+  async function savePurchaseEdit(data) {
+    if (running.current) return null;
+    running.current = true; setBusy(true); setError(''); setSuccess('');
+    const signature = JSON.stringify({ kind: 'purchase_update', data });
+    if (request.current?.signature !== signature) request.current = { signature, id: crypto.randomUUID() };
+    try {
+      const id = await updatePurchase(data, request.current.id);
+      request.current = null;
+      setSuccess("Purchase updated successfully.");
+      await refresh();
+      return id;
+    } catch (err) { setError(errorMessage(err)); return null; }
+    finally { running.current = false; setBusy(false); }
+  }
+  return { save, removeParty, saveSupplierPayment, savePurchaseEdit, busy, error, setError, success, setSuccess };
 }

@@ -65,7 +65,7 @@ export default function TransactionForm({ kind, onSaved }) {
       <Alert>{mutation.error}</Alert><Notice>{mutation.success}</Notice>
       {kind === 'processing' && <Notice>{t('Raw rice is reserved at the start. Finished inventory is added only on completion.')}</Notice>}
       <button className={`${buttonClass} mt-5`} type="submit">{mutation.busy ? t("Saving…") : t(kind === 'processing' ? 'Start process' : 'Save record')}</button>
-      <p className="mt-3 text-xs leading-6 text-stone-500">{t(kind === 'purchase' ? "Pay suppliers from the Suppliers page. Purchase deletions are retained in the audit history." : "Final records cannot be edited or deleted directly. To correct one, void it with a reason and record it again.")}</p>
+      <p className="mt-3 text-xs leading-6 text-stone-500">{t(kind === 'purchase' ? "Pay suppliers from the Suppliers page. Purchase deletions are retained in the audit history." : "Records can be deleted from their history with a deletion reason.")}</p>
     </fieldset></form>
   </Card>;
 }

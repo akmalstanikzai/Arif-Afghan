@@ -24,7 +24,7 @@ export const dateLabel = (value, storedSolarDate) => {
   const date = value?.slice(0, 10);
   if (!isValidGregorian(date)) return '—';
   const localDigits = text => text.replace(/\d/g, digit => number(Number(digit), 0));
-  return localDigits(date) + ' (' + translate('Gregorian') + ') · ' + localDigits(storedSolarDate || toSolarHijri(date)) + ' (' + translate('Solar Hijri') + ')';
+  return localDigits(storedSolarDate || toSolarHijri(date));
 };
 export const today = () => {
   const d = new Date();

@@ -20,6 +20,6 @@ export default function OverviewPage({ user, onNavigate }) {
     <Card title="Inventory by raw rice type"><RawStockTable rows={data.raw_stock} /></Card>
     <Card title="Inventory by product"><ProductStockTable rows={data.products} /></Card>
     <Card title="Expenses by category"><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{data.expenses.map(c=><Stat key={c.id} label={c.name} value={money(c.amount)} />)}</div></Card>
-    <Card title="Recent transactions"><Table rows={data.recent} columns={[{key:'seq',label:"Number",render:r=>number(r.seq,0)},{key:'date',label:"Date",render:r=>dateLabel(r.date, r.date_solar_hijri)},{key:'kind',label:"Record type",render:r=>`${t(kindLabels[r.kind])}${r.voided_at ? ` (${t("Voided")})` : ''}`},{key:'party_name',label:"Party / product",render:r=>r.party_name||r.item_name||r.description||'—'},{key:'total',label:"Amount / weight",render:r=>r.kind==='delivery'?weight(r.weight):money(r.total)}]} /></Card>
+    <Card title="Recent transactions"><Table rows={data.recent.filter(r=>!r.voided_at)} columns={[{key:'seq',label:"Number",render:r=>number(r.seq,0)},{key:'date',label:"Date",render:r=>dateLabel(r.date, r.date_solar_hijri)},{key:'kind',label:"Record type",render:r=>t(kindLabels[r.kind])},{key:'party_name',label:"Party / product",render:r=>r.party_name||r.item_name||r.description||'—'},{key:'total',label:"Amount / weight",render:r=>r.kind==='delivery'?weight(r.weight):money(r.total)}]} /></Card>
   </div>;
 }

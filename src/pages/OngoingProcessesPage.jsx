@@ -9,7 +9,7 @@ import { useFactory, useMutation } from '../hooks/useFactory.js';
 import { useLanguage } from '../hooks/useLanguage';
 import { dateLabel, money, numeric, today, weight } from '../lib/format.js';
 import { isValidGregorian } from '../lib/calendar.js';
-import { EntryDetails } from '../components/History.jsx';
+import { ActionForm, EntryDetails } from '../components/History.jsx';
 
 function CompleteProcess({ process, onClose }) {
   const { data } = useFactory();
@@ -39,6 +39,7 @@ export default function OngoingProcessesPage() {
   const { data } = useFactory();
   const { t } = useLanguage();
   const [selected, setSelected] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const rows = data.ongoing_processes || [];
   const process = rows.find(row => row.id === selected);
   return <div className="space-y-6"><PageHeading title="Ongoing processes" eyebrow="Raw rice reserved for processing" />
@@ -47,8 +48,8 @@ export default function OngoingProcessesPage() {
       { key: 'seq', label: 'Record number' }, { key: 'date', label: 'Start date', render: r => dateLabel(r.date, r.date_solar_hijri) },
       { key: 'item_name', label: 'Raw rice type' }, { key: 'weight', label: 'Input weight', render: r => weight(r.weight) },
       { key: 'raw_cost', label: 'Raw material cost', render: r => money(r.raw_cost) }, { key: 'notes', label: 'Notes' },
-      { key: 'actions', label: 'Actions', render: r => <button className={secondaryClass} onClick={() => setSelected(r.id)}>{t('Details / complete')}</button> },
+      { key: 'actions', label: 'Actions', render: r => <div className="flex gap-2"><button className={secondaryClass} onClick={() => {setSelected(r.id);setDeleting(false);}}>{t('Details / complete')}</button><button className={`${secondaryClass} text-red-700`} onClick={() => {setSelected(r.id);setDeleting(true);}}>{t('Delete')}</button></div> },
     ]} />
-    {process && <><EntryDetails entry={process} /><CompleteProcess key={process.id} process={process} onClose={() => setSelected(null)} /></>}
+    {process && (deleting ? <ActionForm action="delete" entry={process} onClose={() => {setSelected(null);setDeleting(false);}} /> : <><EntryDetails entry={process} /><CompleteProcess key={process.id} process={process} onClose={() => setSelected(null)} /></>)}
   </div>;
 }

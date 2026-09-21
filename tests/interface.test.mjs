@@ -17,13 +17,15 @@ test('all language catalogs have matching keys and interpolation variables', () 
   }
 });
 
-test('language switches update units and Gregorian dates without touching user data', () => {
+test('language switches update units and show record dates only in Solar Hijri without touching user data', () => {
   for (const language of Object.keys(languages)) {
     setCurrentLanguage(language);
     assert.ok(money(125).endsWith(catalogs[language].AFN));
     assert.ok(weight(1.25).endsWith(catalogs[language].kg));
-    assert.ok(dateLabel('2026-09-20').includes(catalogs[language].Gregorian));
-    assert.ok(dateLabel('2026-09-20').includes(catalogs[language]['Solar Hijri']));
+    const displayedDate = dateLabel('2026-09-20');
+    assert.ok(!displayedDate.includes(catalogs[language].Gregorian));
+    assert.ok(!displayedDate.includes(catalogs[language]['Solar Hijri']));
+    assert.ok(!displayedDate.includes('·'));
     assert.ok(translate('Welcome, {name}.', { name: 'Salary $& {name}' }).includes('Salary $& {name}'));
   }
   assert.equal(setCurrentLanguage('unsupported'), 'fa-AF');

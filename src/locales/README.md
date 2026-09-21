@@ -24,11 +24,11 @@ separately: `t('Welcome, {name}.', { name })`. Values are inserted literally and
 React escapes them; do not concatenate translated sentence fragments.
 
 Only the interface is translated. Customer/supplier names, contact details,
-rice/product names, descriptions, notes, and void reasons remain as stored.
+rice/product names, descriptions, notes, and deletion reasons remain as stored.
 The built-in expense category names are interface choices and are translated.
 No locale change updates database records. Historical automatically generated
 notes also remain as stored. Currency stays AFN, weights stay kilograms, and
-business dates can be entered and displayed in Gregorian and Solar Hijri in every language. See `docs/calendars.md` for storage and conversion rules.
+Business dates can be entered in Gregorian or Solar Hijri in every language. Saved records are displayed only in Solar Hijri. See `docs/calendars.md` for storage and conversion rules.
 
 The default is Dari. The selection is saved in browser storage when available.
 Dari and Pashto use RTL; English uses LTR. Runtime settings are in
