@@ -28,3 +28,6 @@ export const fetchSalarySnapshot = month => rpc('mill_salary_snapshot', { p_mont
 export const saveEmployee = (data, requestId) => rpc('mill_save_employee', { p_data: data, p_request_id: requestId });
 export const deleteEmployee = id => rpc('mill_delete_employee', { p_id: id });
 export const payEmployeeSalary = (data, requestId) => rpc('mill_pay_employee_salary', { p_data: data, p_request_id: requestId });
+export const startContractProcess = (data, requestId) => rpc('mill_start_contract_process', { p_data: data, p_request_id: requestId });
+export const completeContractProcess = (data, requestId) => rpc('mill_complete_contract_process', { p_data: data, p_request_id: requestId });
+export const fetchExpenseDashboard = date => rpc('mill_expense_dashboard', { p_date: date });

@@ -22,10 +22,11 @@ try {
     ['LoginPage', { configured: true, error: 'The email or password is incorrect.' }, 'Staff sign in'],
     ['AccountPage', { user }, 'Account details'], ['OverviewPage', { user }, 'Factory activity overview'],
     ['PurchasesPage', {}, 'Record raw rice purchase'], ['ProcessingPage', {}, 'Start process'],
-    ['ProcessingPage', { service: true }, 'Record completed contract processing'],
+    ['ProcessingPage', { service: true }, 'Start contract process'],
     ['SalesPage', {}, 'Record sale'], ['InventoryPage', {}, 'Processed inventory'], ['RawInventoryPage', {}, 'Raw material inventory'], ['OngoingProcessesPage', {}, 'Ongoing processes'],
     ['PartiesPage', { kind: 'supplier' }, 'Add supplier'], ['PartiesPage', { kind: 'customer' }, 'Add customer'],
     ['ExpensesPage', {}, 'Record expense'], ['MonthlyExpensesPage', {}, 'Record monthly fixed expense'], ['StaffSalariesPage', {}, 'Staff and salaries'],
+    ['ExpenseDashboardPage', {}, 'Expense dashboard'],
   ];
   for (const language of ['en', 'fa-AF', 'ps-AF']) {
     setCurrentLanguage(language);
@@ -49,5 +50,5 @@ try {
       }
     }
   }
-  console.log('PASS: 45 page renders across English, Dari, and Pashto; errors and user data boundaries.');
+  console.log('PASS: 48 page renders across English, Dari, and Pashto; errors and user data boundaries.');
 } finally { await server.close(); }

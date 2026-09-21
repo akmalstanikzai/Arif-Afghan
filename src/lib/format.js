@@ -14,14 +14,15 @@ export const navigation = [
   { id: 'daily_expenses', label: "Daily expenses", icon: 'wallet' },
   { id: 'monthly_expenses', label: "Monthly expenses", icon: 'wallet' },
   { id: 'staff_salaries', label: "Staff and salaries", icon: 'user' },
+  { id: 'expense_dashboard', label: "Expense dashboard", icon: 'home' },
   { id: 'account', label: "My account", icon: 'user' },
 ];
 export const sidebarNavigation = [
   navigation[0],
   { id: 'raw_material_group', label: 'Raw material', icon: 'box', children: navigation.filter(item => ['suppliers','purchases','raw_inventory'].includes(item.id)) },
-  { id: 'processes_group', label: 'Processes', icon: 'process', children: navigation.filter(item => ['processing','ongoing','inventory'].includes(item.id)) },
-  ...navigation.filter(item => ['service','sales','customers'].includes(item.id)),
-  { id: 'expenses_group', label: 'Expenses', icon: 'wallet', children: navigation.filter(item => ['daily_expenses','monthly_expenses','staff_salaries'].includes(item.id)) },
+  { id: 'processes_group', label: 'Processes', icon: 'process', children: navigation.filter(item => ['processing','service','ongoing','inventory'].includes(item.id)) },
+  ...navigation.filter(item => ['sales','customers'].includes(item.id)),
+  { id: 'expenses_group', label: 'Expenses', icon: 'wallet', children: navigation.filter(item => ['expense_dashboard','daily_expenses','monthly_expenses','staff_salaries'].includes(item.id)) },
   ...navigation.filter(item => item.id==='account'),
 ];
 export const kindLabels = { purchase: "Purchase", processing: "Processing", service: "Contract processing", sale: "Sale", payment: "Cash payment", delivery: "Delivery", expense: "Expense" };

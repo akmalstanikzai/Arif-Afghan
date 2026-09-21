@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from 'react';
 import { FactoryContext } from '../providers/FactoryContext.js';
-import { deleteParty, paySupplier, postEntry, updatePurchase } from '../services/millApi.js';
+import { completeContractProcess, deleteParty, paySupplier, postEntry, startContractProcess, updatePurchase } from '../services/millApi.js';
 import { errorMessage } from '../lib/format.js';
 export const useFactory = () => useContext(FactoryContext);
 
@@ -64,5 +64,12 @@ export function useMutation() {
     } catch (err) { setError(errorMessage(err)); return null; }
     finally { running.current = false; setBusy(false); }
   }
-  return { save, removeParty, saveSupplierPayment, savePurchaseEdit, busy, error, setError, success, setSuccess };
+  async function saveContract(action,data) {
+    if (running.current) return null;
+    running.current=true;setBusy(true);setError('');setSuccess('');
+    const signature=JSON.stringify({kind:`contract_${action}`,data});
+    if(request.current?.signature!==signature)request.current={signature,id:crypto.randomUUID()};
+    try{const fn=action==='start'?startContractProcess:completeContractProcess;const id=await fn(data,request.current.id);request.current=null;setSuccess(action==='start'?'Contract process started successfully.':'Contract process completed successfully.');await refresh();return id;}catch(err){setError(errorMessage(err));return null;}finally{running.current=false;setBusy(false);}
+  }
+  return { save, removeParty, saveSupplierPayment, savePurchaseEdit, saveContract, busy, error, setError, success, setSuccess };
 }

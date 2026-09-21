@@ -12,6 +12,7 @@ import PartiesPage from '../pages/PartiesPage.jsx';
 import ExpensesPage from '../pages/ExpensesPage.jsx';
 import MonthlyExpensesPage from '../pages/MonthlyExpensesPage.jsx';
 import StaffSalariesPage from '../pages/StaffSalariesPage.jsx';
+import ExpenseDashboardPage from '../pages/ExpenseDashboardPage.jsx';
 import InventoryPage from '../pages/InventoryPage.jsx';
 import DashboardLayout from '../layouts/DashboardLayout.jsx';
 import { useFactory } from '../hooks/useFactory.js';
@@ -28,9 +29,9 @@ function Workspace({ user, signOut, busy, error }) {
   const pages = {
     overview: <OverviewPage user={user} onNavigate={setPage} />,
     purchases: <PurchasesPage />, suppliers: <PartiesPage kind="supplier" />,
-    processing: <ProcessingPage onStarted={()=>setPage('ongoing')} />, service: <ProcessingPage service />,
+    processing: <ProcessingPage onStarted={()=>setPage('ongoing')} />, service: <ProcessingPage service onStarted={()=>setPage('ongoing')} />,
     ongoing: <OngoingProcessesPage />, raw_inventory: <RawInventoryPage />, inventory: <InventoryPage />, sales: <SalesPage />, customers: <PartiesPage kind="customer" />,
-    daily_expenses: <ExpensesPage />, monthly_expenses: <MonthlyExpensesPage />, staff_salaries: <StaffSalariesPage />, account: <AccountPage user={user} />,
+    expense_dashboard: <ExpenseDashboardPage />, daily_expenses: <ExpensesPage />, monthly_expenses: <MonthlyExpensesPage />, staff_salaries: <StaffSalariesPage />, account: <AccountPage user={user} />,
   };
   return <DashboardLayout user={user} page={page} onNavigate={setPage} onSignOut={signOut} busy={busy} error={error}>
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-stone-500">{t("Currency: Afghan afghani · Weight: kilograms · Dates: Gregorian / Solar Hijri")}</p><button className={secondaryClass} disabled={refreshing} onClick={refresh}>{refreshing ? t("Refreshing…") : t("Refresh data")}</button></div>

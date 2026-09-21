@@ -25,12 +25,13 @@ function CompleteProcess({ process, onClose }) {
     if (new Set(outputs.map(o=>o.product_id)).size !== 4 || outputs.some(o => !Number.isFinite(numeric(o.weight)) || numeric(o.weight) < 0) || total <= 0 || total > Number(process.weight)) { mutation.setError('Total output must be positive and no greater than input weight.'); return; }
     const packagingError=validateOutputPackaging(outputs);
     if(packagingError){mutation.setError(packagingError);return;}
-    if (await mutation.save('processing_complete', { id: process.id, date, notes, outputs })) onClose();
+    const saved=process.process_source==='contract' ? await mutation.saveContract('complete',{id:process.id,date,notes,outputs}) : await mutation.save('processing_complete', { id: process.id, date, notes, outputs });
+    if(saved) onClose();
   }
   return <Card title="Complete process"><form onSubmit={submit} noValidate><fieldset disabled={mutation.busy}>
     <div className="grid gap-4 sm:grid-cols-2"><DateInput label="Completion date" required value={date} onChange={setDate} /><Input label="Completion notes" value={notes} onChange={setNotes} maxLength={2000} /></div>
     <ProcessingOutputs products={data.products} outputs={outputs} onChange={setOutputs} />
-    <p className="my-4 text-sm">{t('Input weight')}: {weight(process.weight)} · {t('Total output')}: {weight(total)} · {t('Waste')}: {weight(Number(process.weight) - total)}</p>
+    <p className="my-4 text-sm">{t('Input weight')}: {weight(process.weight)} · {t('Total output')}: {weight(total)} · {t('Waste')}: {weight(Number(process.weight) - total)}{process.process_source==='contract'&&<> · {t('Factory share')}: {weight(total*Number(process.factory_percentage)/100)} · {t('Returned to owner')}: {weight(total*(100-Number(process.factory_percentage))/100)}</>}</p>
     <Alert>{mutation.error}</Alert><button className={buttonClass}>{mutation.busy ? t('Saving…') : t('Complete process')}</button><button type="button" className={`${secondaryClass} ms-3`} onClick={onClose}>{t('Cancel')}</button>
   </fieldset></form></Card>;
 }
@@ -46,7 +47,7 @@ export default function OngoingProcessesPage() {
     <Notice>{t('Raw rice is reserved at the start. Finished inventory is added only on completion.')}</Notice>
     <Table rows={rows} columns={[
       { key: 'seq', label: 'Record number' }, { key: 'date', label: 'Start date', render: r => dateLabel(r.date, r.date_solar_hijri) },
-      { key: 'item_name', label: 'Raw rice type' }, { key: 'weight', label: 'Input weight', render: r => weight(r.weight) },
+      { key: 'item_name', label: 'Raw rice type', render:r=><>{r.item_name}{r.process_source==='contract'&&<span className="ms-2 rounded bg-amber-100 px-2 py-1 text-amber-800">{t('Contract')}</span>}</> }, { key: 'weight', label: 'Input weight', render: r => weight(r.weight) },
       { key: 'raw_cost', label: 'Raw material cost', render: r => money(r.raw_cost) }, { key: 'notes', label: 'Notes' },
       { key: 'actions', label: 'Actions', render: r => <div className="flex gap-2"><button className={secondaryClass} onClick={() => {setSelected(r.id);setDeleting(false);}}>{t('Details / complete')}</button><button className={`${secondaryClass} text-red-700`} onClick={() => {setSelected(r.id);setDeleting(true);}}>{t('Delete')}</button></div> },
     ]} />

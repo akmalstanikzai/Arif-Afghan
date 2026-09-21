@@ -75,6 +75,7 @@ export function EntryDetails({ entry: e }) {
   if (e.father_name) items.push(['Father name',e.father_name]);
   if (e.payment_method) items.push(['Payment method',t(e.payment_method === 'cheque' ? 'Cheque' : 'Cash')],['Cheque number',e.cheque_number || '—'],['Sarafi / bank',e.payment_institution || '—']);
   if (e.processing_status) items.push(['Processing status',t(e.processing_status === 'ongoing' ? 'Ongoing' : 'Completed')]);
+  if (e.process_source === 'contract') items.push(['Process source',t('Contract')],['Factory share percentage',`${number(e.factory_percentage,4)}%`]);
   if (e.completed_date) items.push(['Completion date',dateLabel(e.completed_date,e.completed_date_solar_hijri)]);
   if (Number(e.bag_size)>0) items.push(['Bag size',weight(e.bag_size)],['Bag mark',e.bag_mark]);
   if (e.completion_notes) items.push(['Completion notes',e.completion_notes]);
