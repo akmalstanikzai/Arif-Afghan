@@ -52,3 +52,20 @@ export function validateTransaction(kind, v, data) {
   if (kind === 'expense' && (!v.description?.trim() || !v.category_id || numeric(v.amount) <= 0)) return "Enter an expense description, category, and positive amount.";
   return '';
 }
+
+export function calculateRiceCosts(report, allocation, rawTypeId = '') {
+  const shares = allocation.map(value => Number(value) || 0);
+  const valid = shares.every(value => value >= 0) && Math.abs(shares.reduce((sum, value) => sum + value, 0) - 100) < 0.001;
+  const selectedRows = (report?.rows || []).filter(row => !rawTypeId || String(row.raw_type_id) === String(rawTypeId));
+  const qualityTotals = selectedRows.reduce((totals, row) => {
+    totals[Number(row.quality) - 1] += Number(row.output_weight) || 0;
+    return totals;
+  }, [0, 0, 0, 0]);
+  const rows = selectedRows.map(row => {
+    const index = Number(row.quality) - 1;
+    const expensePerKg = valid && qualityTotals[index] > 0 ? Number(report.total_expenses) * shares[index] / 100 / qualityTotals[index] : null;
+    const rawPrice = row.raw_price == null ? null : Number(row.raw_price);
+    return { ...row, expense_per_kg: expensePerKg, final_cost: rawPrice == null || expensePerKg == null ? null : rawPrice + expensePerKg };
+  });
+  return { valid, qualityTotals, rows };
+}

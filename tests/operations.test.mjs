@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { fromKilograms, toKilograms } from '../src/lib/units.js';
 import { emptyInventoryFilters, filterInventory } from '../src/services/inventory.js';
-import { validateTransaction } from '../src/services/calculations.js';
+import { calculateRiceCosts, validateTransaction } from '../src/services/calculations.js';
 
 test('kg, metric tons and all bag sizes convert without changing stored weight', () => {
   assert.equal(toKilograms('۱٫۲۵'.replace('٫','.'),'tons'), '1250');
@@ -37,4 +37,26 @@ test('starting a process does not need outputs; purchases accept initial payment
   assert.equal(validateTransaction('purchase',{date:'2026-09-20',party_id:'supplier',raw_type_id:1,weight:10,unit_price:5,logistics:0},data),'');
   assert.equal(validateTransaction('purchase',{date:'2026-09-20',party_id:'supplier',raw_type_id:1,weight:10,unit_price:5,logistics:0,paid:10,payment_method:'cheque'},data),'Enter a cheque number.');
   assert.equal(validateTransaction('sale',{date:'2026-09-20',party_id:'customer',product_id:11,weight:1,unit_price:5,bag_size:20,bag_mark:'Mahfooz'},data),'There is not enough available inventory.');
+});
+
+test('rice costing allocates all period expenses by quality output weight', () => {
+  const report = { total_expenses: 1000, rows: [
+    { product_id: 11, raw_type_id: 1, quality: 1, output_weight: 100, raw_price: 50 },
+    { product_id: 21, raw_type_id: 2, quality: 1, output_weight: 300, raw_price: 60 },
+    { product_id: 12, raw_type_id: 1, quality: 2, output_weight: 250, raw_price: 50 },
+    { product_id: 13, raw_type_id: 1, quality: 3, output_weight: 0, raw_price: 50 },
+  ] };
+  const result = calculateRiceCosts(report, [50, 25, 15, 10]);
+  assert.equal(result.valid, true);
+  assert.deepEqual(result.qualityTotals, [400, 250, 0, 0]);
+  assert.equal(result.rows[0].expense_per_kg, 1.25);
+  assert.equal(result.rows[0].final_cost, 51.25);
+  assert.equal(result.rows[1].final_cost, 61.25);
+  assert.equal(result.rows[2].expense_per_kg, 1);
+  assert.equal(result.rows[3].final_cost, null);
+  assert.equal(calculateRiceCosts(report, [50, 25, 15, 5]).valid, false);
+  const selected = calculateRiceCosts(report, [50, 25, 15, 10], 1);
+  assert.deepEqual(selected.qualityTotals, [100, 250, 0, 0]);
+  assert.equal(selected.rows.length, 3);
+  assert.equal(selected.rows[0].expense_per_kg, 5);
 });
