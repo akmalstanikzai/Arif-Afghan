@@ -32,6 +32,10 @@ const currentLanguage = () => languages[getLanguage()].locale;
 export const number = (value, digits = 2) => new Intl.NumberFormat(currentLanguage(), { maximumFractionDigits: digits }).format(Number(value) || 0);
 export const money = value => `${number(value)} ${translate('AFN')}`;
 export const weight = value => `${number(value, 3)} ${translate('kg')}`;
+export const summaryWeight = value => {
+  const kilograms = Math.floor(Number(value) || 0);
+  return `${number(kilograms, 0)} ${translate('kg')} · ${number(Math.floor(kilograms / 1000), 0)} ${translate('tons')}`;
+};
 export const dateLabel = (value, storedSolarDate) => {
   const date = value?.slice(0, 10);
   if (!isValidGregorian(date)) return '—';

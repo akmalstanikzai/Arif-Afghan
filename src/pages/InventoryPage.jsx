@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PageHeading from '../components/PageHeading.jsx';
 import { Card, Input, Stat, Table, Field, fieldClass, secondaryClass } from '../components/Fields.jsx';
 import { useFactory } from '../hooks/useFactory.js';
-import { number, qualityLabels, weight } from '../lib/format.js';
+import { number, qualityLabels, summaryWeight, weight } from '../lib/format.js';
 import { useLanguage } from '../hooks/useLanguage';
 import { bagMarks, bagSizes } from '../lib/units.js';
 import { emptyInventoryFilters, filterInventory } from '../services/inventory.js';
@@ -28,7 +28,7 @@ export default function InventoryPage() {
       <div className="flex items-end"><button className={secondaryClass} onClick={()=>setFilters({...emptyInventoryFilters})}>{t('Clear filters')}</button></div>
     </div></Card>
     <p className="text-xs text-stone-500">{t('Totals below follow the selected filters.')} {number(rows.length,0)} {t('stock variants')}</p>
-    <div className="grid gap-4 sm:grid-cols-3"><Stat label="Processed rice in storage" value={weight(sum('physical'))} /><Stat label="Factory rice available for sale" value={weight(sum('available'))} /><Stat label="Customer rice awaiting delivery" value={weight(sum('reserved'))} /></div>
+    <div className="grid gap-4 sm:grid-cols-3"><Stat label="Processed rice in storage" value={summaryWeight(sum('physical'))} /><Stat label="Factory rice available for sale" value={summaryWeight(sum('available'))} /><Stat label="Customer rice awaiting delivery" value={summaryWeight(sum('reserved'))} /></div>
     <Card title="Processed rice"><p className="mb-4 text-xs leading-7 text-stone-500">{t('Physical inventory = factory rice available for sale + sold rice awaiting delivery. Inventory is calculated from records and cannot be changed manually.')}</p>
       <Table rows={rows} columns={[
         {key:'name',label:'Product'}, {key:'quality',label:'Quality',render:r=>t(qualityLabels[Number(r.quality)-1] || '')},

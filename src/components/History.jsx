@@ -89,7 +89,7 @@ export function EntryDetails({ entry: e }) {
 export default function History({ kind = null, partyId = null, title = "Transaction history", expenseCategories }) {
   const { version } = useFactory();
   const { t } = useLanguage();
-  const [filters, setFilters] = useState({ search: '', from: '', to: '', category: '' });
+  const [filters, setFilters] = useState({ search: '', category: '' });
   const [page, setPage] = useState(0);
   const [result, setResult] = useState({ rows: [], count: 0, total: 0 });
   const [loading, setLoading] = useState(true);
@@ -102,7 +102,7 @@ export default function History({ kind = null, partyId = null, title = "Transact
     let active = true;
     const timer = setTimeout(() => {
       setLoading(true); setError('');
-      fetchHistory({ p_kind:kind, p_party:partyId, p_from:filters.from || null, p_to:filters.to || null, p_search:filters.search, p_page:page, p_voided:false, p_category:filters.category || null })
+      fetchHistory({ p_kind:kind, p_party:partyId, p_from:null, p_to:null, p_search:filters.search, p_page:page, p_voided:false, p_category:filters.category || null })
         .then(data => { if (active) setResult(data); })
         .catch(err => { if (active) setError(errorMessage(err)); })
         .finally(() => { if (active) setLoading(false); });
@@ -111,16 +111,14 @@ export default function History({ kind = null, partyId = null, title = "Transact
   }, [kind,partyId,filters,page,version,reload]);
   const rows = loading || error ? [] : result.rows;
   return <Card title={title}>
-    <div className="mb-4 grid items-end gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="mb-4 grid items-end gap-3 sm:grid-cols-2">
       <Input label="Search records" value={filters.search} onChange={v=>filter('search',v)} placeholder={kind === 'purchase' ? "Name or father name" : "Name, product, or record number"} />
-      <DateInput label="From date" value={filters.from} onChange={v=>filter('from',v)} />
-      <DateInput label="To date" value={filters.to} onChange={v=>filter('to',v)} />
       {expenseCategories && <label className="text-xs font-semibold">{t("Expense category")}<select className={`${fieldClass} mt-2`} value={filters.category} onChange={e=>filter('category',e.target.value)}><option value="">{t("All categories")}</option>{expenseCategories.map(c=><option key={c.id} value={c.id}>{t(c.name)}</option>)}</select></label>}
     </div>
     {loading && <p role="status" className="my-4 text-sm text-stone-500">{t("Loading records…")}</p>}<Alert>{error}</Alert>{error && <button className={secondaryClass} onClick={()=>setReload(v=>v+1)}>{t("Try again")}</button>}
     <Table rows={rows} empty={loading ? "Please wait…" : error ? "Could not load the information." : "No matching record was found."} columns={[
-      {key:'seq',label:"Number",render:r=>number(r.seq,0)},{key:'date',label:"Date",render:r=>dateLabel(r.date, r.date_solar_hijri)},
-      {key:'kind',label:"Type",render:r=>t(kindLabels[r.kind])},
+      ...(kind === 'purchase' ? [] : [{key:'seq',label:"Number",render:r=>number(r.seq,0)}]),{key:'date',label:"Date",render:r=>dateLabel(r.date, r.date_solar_hijri)},
+      ...(kind === 'purchase' ? [] : [{key:'kind',label:"Type",render:r=>t(kindLabels[r.kind])}]),
       ...(kind === 'purchase' ? [
         {key:'party_name',label:"Name",render:r=>r.party_name || '—'},
         {key:'father_name',label:"Father name",render:r=>r.father_name || '—'},

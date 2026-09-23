@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { catalogs, languages, translate, setCurrentLanguage } from '../src/lib/translations.js';
-import { errorMessage, money, weight, dateLabel, normalizeDigits } from '../src/lib/format.js';
+import { errorMessage, money, weight, summaryWeight, dateLabel, normalizeDigits } from '../src/lib/format.js';
 import { calculate, validateTransaction } from '../src/services/calculations.js';
 
 test('all language catalogs have matching keys and interpolation variables', () => {
@@ -30,6 +30,12 @@ test('language switches update units and show record dates only in Solar Hijri w
   }
   assert.equal(setCurrentLanguage('unsupported'), 'fa-AF');
   assert.equal(normalizeDigits('۱۲٣٫۵'), '123.5');
+});
+
+test('summary weights show whole metric tons rounded down', () => {
+  setCurrentLanguage('en');
+  assert.equal(summaryWeight(1999.99), '1,999 kg · 1 tons');
+  assert.equal(summaryWeight(999), '999 kg · 0 tons');
 });
 
 test('all database business errors have specific translations', () => {

@@ -5,7 +5,7 @@ import PageHeading from '../components/PageHeading.jsx';
 import { Card, Field, Input, Stat, Table, fieldClass } from '../components/Fields.jsx';
 import { useFactory } from '../hooks/useFactory.js';
 import { useLanguage } from '../hooks/useLanguage.js';
-import { dateLabel, errorMessage, money, number, qualityLabels, today, weight } from '../lib/format.js';
+import { dateLabel, errorMessage, money, number, qualityLabels, summaryWeight, today, weight } from '../lib/format.js';
 import { fetchRiceCostReport } from '../services/millApi.js';
 import { calculateRiceCosts } from '../services/calculations.js';
 
@@ -50,7 +50,7 @@ export default function RiceCostingPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat label="Total expenses" value={money(report.total_expenses)} note={t('Includes daily expenses, salaries, and electricity.')} />
         <Stat label="Average expense per day" value={money(report.average_daily_expense)} note={t('{days} calendar days', { days: number(report.days, 0) })} />
-        <Stat label="Processed output" value={weight(report.total_output_weight)} note={t('Factory-owned processing completed in this period')} />
+        <Stat label="Processed output" value={summaryWeight(report.total_output_weight)} note={t('Factory-owned processing completed in this period')} />
       </div>
       <Card title="Allocate expenses by rice type and quality">
         <p className="mb-5 text-sm leading-7 text-stone-600">{t('Choose a rice type, then assign all expenses across its four qualities. Each share is divided by the kilograms produced for that rice type and quality during the selected period.')}</p>

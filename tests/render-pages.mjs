@@ -49,7 +49,7 @@ try {
       if (['PurchasesPage','ProcessingPage','SalesPage','ExpensesPage'].includes(name)) {
         assert.ok(html.includes(catalogs[language].Gregorian), `${name}: Gregorian entry`);
         assert.ok(html.includes(catalogs[language]['Solar Hijri']), `${name}: Solar Hijri entry`);
-        assert.ok(html.includes(catalogs[language]['From date']), `${name}: dual-calendar history filter`);
+        assert.ok(!html.includes(catalogs[language]['From date']), `${name}: history date filters removed`);
       }
     }
   }
