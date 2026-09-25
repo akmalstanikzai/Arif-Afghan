@@ -5,6 +5,11 @@ const dayMs = 86400000;
 export const minDate = '1800-01-01';
 export const maxDate = '2255-12-31';
 const iso = (year, month, day) => `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+export const solarMonthNames = ['Hamal','Sawr','Jawza','Saratan','Asad','Sunbula','Mizan','Aqrab','Qaws','Jadi','Dalwa','Hut'];
+export const solarMonthLabel = value => {
+  const match = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(String(value || ''));
+  return match ? `${solarMonthNames[Number(match[2])-1]} ${match[1]}` : String(value || '');
+};
 export const dateDigits = value => String(value ?? '').trim().replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replaceAll('/', '-');
 
 function yearStart(year) {
